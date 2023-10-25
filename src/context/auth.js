@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { auth, db } from '../services/firebaseConnection';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -10,7 +10,23 @@ export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null)
     const [loadingAuth, setLoadingAuth] = useState(false)
+    const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        loadUser()
+    }, [])
+
+    const loadUser = async () => {
+        const storageUser = localStorage.getItem('tickets')
+
+        if (storageUser) {
+            setUser(JSON.parse(storageUser))
+            setLoadingAuth(false)
+        }
+
+        setLoading(false)
+    }
 
     const singIn = async (email, passowrd) => {
         setLoadingAuth(true)
@@ -85,6 +101,12 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    const logout = async () => {
+        await signOut(auth)
+        localStorage.removeItem('tickets')
+        setUser(null)
+    }
+
     const storageUser = (data) => {
         localStorage.setItem("tickets", JSON.stringify(data))
     }
@@ -96,7 +118,9 @@ export const AuthProvider = ({ children }) => {
                 user,
                 singIn,
                 singUp,
-                loadingAuth
+                logout,
+                loadingAuth,
+                loading,
             }}
         >
             {children}
