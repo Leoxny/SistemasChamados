@@ -4,6 +4,7 @@ import { SingUpScreen } from '../pages/Login/SingUp'
 import { DashboardScreen } from '../pages/Dashboard'
 import { Private } from './Private'
 import { ProfileScreen } from '../pages/Profile'
+import { CustomersScreen } from '../pages/Customers'
 
 export const RoutesApp = () => {
     return (
@@ -12,6 +13,7 @@ export const RoutesApp = () => {
             <Route path='/register' element={<SingUpScreen />} />
             <Route path='/dashboard' element={<Private> <DashboardScreen /> </Private>} />
             <Route path='/profile' element={<Private> <ProfileScreen /> </Private>} />
+            <Route path='/customers' element={<Private> <CustomersScreen /> </Private>} />
         </Routes>
     )
 }
