@@ -116,11 +116,13 @@ export const AuthProvider = ({ children }) => {
             value={{
                 signed: !!user, //transforma em bollean
                 user,
+                setUser,
                 singIn,
                 singUp,
                 logout,
                 loadingAuth,
                 loading,
+                storageUser
             }}
         >
             {children}
