@@ -8,6 +8,7 @@ import { AuthContext } from '../../context/auth'
 import { collection, getDocs, orderBy, limit, startAfter, query } from 'firebase/firestore'
 import { db } from '../../services/firebaseConnection'
 import { format } from 'date-fns'
+import { Modal } from '../../components/Modal'
 
 const listRef = collection(db, "chamados")
 
@@ -18,6 +19,8 @@ export const DashboardScreen = () => {
     const [isEmpty, setIsEmpty] = useState(false)
     const [lastDocs, setLastDocs] = useState()
     const [loadingMore, setLoadingMore] = useState(false)
+    const [showPostModal, setPostModal] = useState(false)
+    const [detail, setDetail] = useState()
 
     useEffect(() => {
         loadChamados()
@@ -33,7 +36,6 @@ export const DashboardScreen = () => {
         await updateState(querySnapShot)
         setLoading(false)
     }
-
 
     const updateState = async (querySnapShot) => {
         const isCollection = querySnapShot.size === 0
@@ -72,6 +74,11 @@ export const DashboardScreen = () => {
         const querySnapShot = await getDocs(q)
         await updateState(querySnapShot)
 
+    }
+
+    const toggleModal = (item) => {
+        setPostModal(!showPostModal)
+        setDetail(item)
     }
 
     if (loading) {
@@ -130,7 +137,7 @@ export const DashboardScreen = () => {
                                                 </td>
                                                 <td data-label="Cadastrado">{item.createdFormat}</td>
                                                 <td data-label="#">
-                                                    <button className='action' style={{ backgroundColor: '#3583f6' }}>
+                                                    <button className='action' style={{ backgroundColor: '#3583f6' }} onClick={() => toggleModal(item)}>
                                                         <FiSearch color='#fff' size={17} />
                                                     </button>
                                                     <Link to={`/new/${item.id}`} className='action' style={{ backgroundColor: '#f6a935' }}>
@@ -152,6 +159,12 @@ export const DashboardScreen = () => {
                 </>
 
             </div>
+
+            {showPostModal && 
+            <Modal 
+                conteudo={detail}
+                close={() => setPostModal(!showPostModal)}
+            />}
 
         </div>
     )
